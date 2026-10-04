@@ -2,6 +2,8 @@ import tkinter as tk #Создаёт окна и элементы интерфе
 import socket #Узнаёт имя компьютера
 import getpass#Узнаёт имя пользователя
 import argparse #библиотека для разбора параметров командной строки
+import json #библиотека для работы с JSON-файлами
+import os #библиотека для проверки существования файлов
 
 
 class ShellEmulator:
@@ -9,6 +11,7 @@ class ShellEmulator:
         self.root = root
         self.vfs_path = vfs_path #сохраняем путь к VFS 
         self.script_path = script_path # сохраняем путь к скрипту
+        self.vfs = None #  хранится загруженная VFS
 
         username = getpass.getuser() #Возвращает имя пользователя, который вошёл в систему
         hostname = socket.gethostname() #Возвращает имя компьютера в сети
@@ -29,8 +32,38 @@ class ShellEmulator:
         self.print_line(f"[DEBUG] VFS: {self.vfs_path}")
         self.print_line(f"[DEBUG] Скрипт: {self.script_path}")
 
+        # НОВОЕ: загружаем VFS из JSON-файла
+        self.load_vfs()
+        # показываем motd (приветствие), если есть
+        self.show_motd()
+
         if self.script_path:
             self.run_script(self.script_path)
+
+    def load_vfs(self): # метод load_vfs - загружает виртуальную файловую систему из JSON
+        # Проверяем, существует ли файл VFS
+        if not os.path.exists(self.vfs_path):
+            self.print_line(f"Ошибка: файл VFS не найден: {self.vfs_path}")
+            return
+        try:
+            # Открываем файл и читаем его как JSON
+            with open(self.vfs_path, "r", encoding="utf-8") as f:
+                self.vfs = json.load(f)
+            self.print_line(f"[DEBUG] VFS загружена: {self.vfs_path}")
+        except json.JSONDecodeError:
+            self.print_line(f"Ошибка: неверный формат JSON в файле: {self.vfs_path}")
+        except Exception as e:
+            self.print_line(f"Ошибка загрузки VFS: {e}")
+
+    def show_motd(self):    # метод show_motd - показывает содержимое файла /motd.txt
+        if not self.vfs:
+            return
+        root_dir = self.vfs.get("/", {})
+        motd = root_dir.get("children", {}).get("motd.txt")
+        if motd and motd.get("type") == "file":
+            self.print_line("=== MOTD ===")
+            self.print_line(motd.get("content", ""))
+            self.print_line("============")
 
     def on_enter(self, event):
         command_line = self.input.get() # Получаем строку, которую ввёл пользователь
@@ -56,8 +89,7 @@ class ShellEmulator:
         else:
             self.print_line(f"Команда не найдена: {command}")
 
-    # метод run_script-читает файл скрипта и выполняет команды
-    def run_script(self, script_path):
+    def run_script(self, script_path):    # метод run_script-читает файл скрипта и выполняет команды
         self.print_line(f"[DEBUG] Выполняем скрипт: {script_path}")
         try:
             with open(script_path, "r", encoding="utf-8") as f:

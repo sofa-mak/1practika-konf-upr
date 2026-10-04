@@ -1,5 +1,9 @@
 ls
-cd Documents
+cd home
+ls
+cd user
+ls
+cd documents
 ls
 hello
 cd

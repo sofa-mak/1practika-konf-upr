@@ -1,0 +1,28 @@
+{
+  "/": {
+    "type": "dir",
+    "children": {
+      "motd.txt": {
+        "type": "file",
+        "content": "VFS с несколькими файлами.\n"
+      },
+      "readme.txt": {
+        "type": "file",
+        "content": "Это readme.\n"
+      },
+      "notes.txt": {
+        "type": "file",
+        "content": "Заметка.\n"
+      },
+      "docs": {
+        "type": "dir",
+        "children": {
+          "manual.txt": {
+            "type": "file",
+            "content": "Руководство.\n"
+          }
+        }
+      }
+    }
+  }
+}

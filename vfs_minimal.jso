@@ -1,0 +1,11 @@
+{
+  "/": {
+    "type": "dir",
+    "children": {
+      "motd.txt": {
+        "type": "file",
+        "content": "Минимальная VFS.\n"
+      }
+    }
+  }
+}

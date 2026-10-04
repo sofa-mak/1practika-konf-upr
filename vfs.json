@@ -1,0 +1,34 @@
+{
+  "/": {
+    "type": "dir",
+    "children": {
+      "motd.txt": {
+        "type": "file",
+        "content": "Добро пожаловать в эмулятор оболочки UNIX!\nЭто виртуальная файловая система.\n"
+      },
+      "home": {
+        "type": "dir",
+        "children": {
+          "user": {
+            "type": "dir",
+            "children": {
+              "readme.txt": {
+                "type": "file",
+                "content": "Это файл readme.\nОн лежит в /home/user/\n"
+              },
+              "documents": {
+                "type": "dir",
+                "children": {
+                  "notes.txt": {
+                    "type": "file",
+                    "content": "Заметка 1\nЗаметка 2\nЗаметка 3\n"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
