@@ -1,0 +1,5 @@
+ls
+cd Documents
+ls
+hello
+cd
