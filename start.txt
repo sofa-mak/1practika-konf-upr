@@ -3,7 +3,9 @@ cd home
 ls
 cd user
 ls
-cd documents
+tail readme.txt
+tac readme.txt
+cd ..
 ls
 hello
 cd
