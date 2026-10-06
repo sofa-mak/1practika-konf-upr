@@ -6,6 +6,10 @@ ls
 tail readme.txt
 tac readme.txt
 cd ..
+cd
+touch test.txt
+ls
+rm test.txt
 ls
 hello
-cd
+exit

@@ -153,6 +153,42 @@ class ShellEmulator: # Класс-эмулятор оболочки
         #Очищаем область вывода
         self.output.delete("1.0", tk.END)
 
+    def cmd_touch(self, args): #Метод cmd_touch - реализует команду touch (создать файл)
+        if not args:
+            self.print_line("touch: не указано имя файла")
+            return
+        filename = args[0]
+        #Получаем текущую папку
+        current = self.get_current_dir()
+        children = current.get("children", {})
+        #Если файл уже существует - ничего не делаем
+        if filename in children:
+            self.print_line(f"touch: {filename}: файл уже существует")
+            return
+        #Создаём новый файл с пустым содержимым
+        children[filename] = {"type": "file", "content": ""}
+        self.print_line(f"Файл создан: {filename}")
+
+    def cmd_rm(self, args): #Метод cmd_rm - реализует команду rm (удалить файл)
+        if not args:
+            self.print_line("rm: не указано имя файла")
+            return
+        filename = args[0]
+        #Получаем текущую папку
+        current = self.get_current_dir()
+        children = current.get("children", {})
+        #Проверяем, существует ли файл
+        if filename not in children:
+            self.print_line(f"rm: {filename}: файл не найден")
+            return
+        #Проверяем, что это файл, а не папка
+        if children[filename].get("type") != "file":
+            self.print_line(f"rm: {filename}: это папка, удаление папок не поддерживается")
+            return
+        #Удаляем файл
+        del children[filename]
+        self.print_line(f"Файл удалён: {filename}")
+
     def on_enter(self, event): #Срабатывает при нажатии Enter
         command_line = self.input.get() #Получаем строку, которую ввёл пользователь
         self.input.delete(0, tk.END) #Очищаем поле ввода
@@ -181,6 +217,10 @@ class ShellEmulator: # Класс-эмулятор оболочки
             self.cmd_tac(args)
         elif command == "clear":
             self.cmd_clear()
+        elif command == "touch":
+            self.cmd_touch(args)
+        elif command == "rm":
+            self.cmd_rm(args)
         else:
             self.print_line(f"Команда не найдена: {command}")
 
